@@ -14,35 +14,59 @@ namespace CheeseMVC.ViewModels
         [Display(Name = "Cheese Name")]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "You must give your cheese a description")]
+        //[Required(ErrorMessage = "You must give your cheese a description!!!!!!!!!")]
+        [Required]
+        [Display(Name = "Description YO!")]
         public string Description { get; set; }
 
-        public CheeseType Type { get; set; }
+        [Required(ErrorMessage = "Proper Category Not Selected! I don't need this here, its a test :(")]
+        [Display(Name = "Category")]
+        public CheeseCategory CategoryID { get; set; }
 
-        public List<SelectListItem> CheeseTypes { get; set; }
+        public List<SelectListItem> Categories { get; set; }
 
-        public AddCheeseViewModel() {
-
-            CheeseTypes = new List<SelectListItem>();
-
-            // <option value="0">Hard</option>
-            CheeseTypes.Add(new SelectListItem {
-                Value = ((int) CheeseType.Hard).ToString(),
-                Text = CheeseType.Hard.ToString()
-            });
-
-            CheeseTypes.Add(new SelectListItem
-            {
-                Value = ((int)CheeseType.Soft).ToString(),
-                Text = CheeseType.Soft.ToString()
-            });
-
-            CheeseTypes.Add(new SelectListItem
-            {
-                Value = ((int)CheeseType.Fake).ToString(),
-                Text = CheeseType.Fake.ToString()
-            });
+        // TODO - Default Constructor?
+        public AddCheeseViewModel()
+        {
 
         }
+
+        public AddCheeseViewModel(IEnumerable<CheeseCategory> categories)
+        {
+            
+            Categories = new List<SelectListItem>();
+
+            foreach (CheeseCategory category in categories)
+            {
+                Categories.Add(new SelectListItem
+                {
+                    Value = category.ID.ToString(),
+                    Text = category.Name
+                });
+            }
+
+            /*
+            // <option value="0">Hard</option>
+            Categories.Add(new SelectListItem {
+                Value = 1,//((int)CheeseType.Soft).ToString(),
+                Text = "hello" // CheeseType.Hard.ToString()
+            });
+
+            Categories.Add(new SelectListItem
+            {
+                Value = 2.ToString(),//((int)CheeseType.Soft).ToString(),
+                Text = "and hello"//CheeseType.Soft.ToString()
+            });
+
+            Categories.Add(new SelectListItem
+            {
+                Value = 3.ToString(),//((int)CheeseType.Fake).ToString(),
+                Text = "and Hello again!"//CheeseType.Fake.ToString()
+            });
+            */
+
+        }
+        // TODO - this was my origina version :(
+        //public AddCheeseViewModel(List<CheeseCategory> cheeseCategories)
     }
 }

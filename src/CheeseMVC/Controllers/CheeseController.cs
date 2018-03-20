@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CheeseMVC.ViewModels;
 using CheeseMVC.Data;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace CheeseMVC.Controllers
 {
@@ -18,15 +19,15 @@ namespace CheeseMVC.Controllers
 
         // GET: /<controller>/
         public IActionResult Index()
-        {
-            List<Cheese> cheeses = context.Cheeses.ToList();
+        {// TODO - Changed to include "include" based after video...
+            IList<Cheese> cheeses = context.Cheeses.Include(c => c.Category).ToList();
 
             return View(cheeses);
         }
 
         public IActionResult Add()
-        {
-            AddCheeseViewModel addCheeseViewModel = new AddCheeseViewModel();
+        {// TODO - Changed as per video...
+            AddCheeseViewModel addCheeseViewModel = new AddCheeseViewModel(context.Categories.ToList());
             return View(addCheeseViewModel);
         }
 
@@ -35,21 +36,25 @@ namespace CheeseMVC.Controllers
         {
             if (ModelState.IsValid)
             {
+                // TODO - added this as per video....
+                // TODO - IMPORTANT, remove "Equals" and replace the "==" that was originally there!!!!! Or rewrite Equals????
+                CheeseCategory newCheeseCategory =
+                    context.Categories.Single(c => c.ID.Equals( addCheeseViewModel.CategoryID));
                 // Add the new cheese to my existing cheeses
                 Cheese newCheese = new Cheese
                 {
                     Name = addCheeseViewModel.Name,
                     Description = addCheeseViewModel.Description,
-                    Type = addCheeseViewModel.Type
+                    Category = newCheeseCategory
                 };
-
+                // TODO - maybe?? context.Categories.Add(addCheeseViewModel.Type);
                 context.Cheeses.Add(newCheese);
                 context.SaveChanges();
 
                 return Redirect("/Cheese");
             }
-
-            return View(addCheeseViewModel);
+            // TODO - SHOULD I pass Catagories into this View Somehow??
+            return View(addCheeseViewModel); // ( addCheeseViewModel.Categories ) ??
         }
 
         public IActionResult Remove()
@@ -71,6 +76,24 @@ namespace CheeseMVC.Controllers
             context.SaveChanges();
 
             return Redirect("/");
+        }
+
+        // TODO - Added this because of video....
+        // /Controller/Action/id
+        public IActionResult Category(int id)
+        {
+            if (id == 0)
+            {
+                return Redirect("/Category");
+            }
+
+            CheeseCategory theCategory = context.Categories
+                .Include(cat => cat.Cheeses)
+                .Single(cat => cat.ID == id);
+
+            ViewBag.title = "Cheeses in category: " + theCategory.Name;
+
+            return View("Index", theCategory.Cheeses);
         }
     }
 }
