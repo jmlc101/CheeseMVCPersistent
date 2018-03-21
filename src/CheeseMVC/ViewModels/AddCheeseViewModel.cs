@@ -26,6 +26,7 @@ namespace CheeseMVC.ViewModels
         public List<SelectListItem> Categories { get; set; }
 
         // TODO - Default Constructor?
+        // Can I clear out the body of the constructor? lets test this out with different ways?
         public AddCheeseViewModel()
         {
             
