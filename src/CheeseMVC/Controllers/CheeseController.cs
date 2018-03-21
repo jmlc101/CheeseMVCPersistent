@@ -34,6 +34,10 @@ namespace CheeseMVC.Controllers
         [HttpPost]
         public IActionResult Add(AddCheeseViewModel addCheeseViewModel)
         {
+            //This "debugitem" is to watch in debugger.
+            CheeseCategory debugitem = context.Categories.First(c => c.ID == 1).ToString();
+            var debugitem2 = context.Categories;
+
             if (ModelState.IsValid)
             {
                 // TODO - added this as per video....
@@ -49,6 +53,7 @@ namespace CheeseMVC.Controllers
                 };
                 // TODO - maybe?? context.Categories.Add(addCheeseViewModel.Type);
                 context.Cheeses.Add(newCheese);
+                //context.Categories.Add(newCheese.Category);
                 context.SaveChanges();
 
                 return Redirect("/Cheese");

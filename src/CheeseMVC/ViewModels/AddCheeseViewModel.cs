@@ -18,11 +18,11 @@ namespace CheeseMVC.ViewModels
         [Required]
         [Display(Name = "Description YO!")]
         public string Description { get; set; }
-
+        // TODO - This is going threw Null in add form
         [Required(ErrorMessage = "Proper Category Not Selected! I don't need this here, its a test :(")]
         [Display(Name = "Category")]
         public CheeseCategory CategoryID { get; set; }
-
+        // TODO - THESE ARE GOING THREW NULL AT ADD FORM.
         public List<SelectListItem> Categories { get; set; }
 
         // TODO - Default Constructor?
