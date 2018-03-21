@@ -35,7 +35,7 @@ namespace CheeseMVC.Controllers
         public IActionResult Add(AddCheeseViewModel addCheeseViewModel)
         {
             //This "debugitem" is to watch in debugger.
-            CheeseCategory debugitem = context.Categories.First(c => c.ID == 1).ToString();
+            //var debugitem = (context.Categories.First(c => c.Name == (addCheeseViewModel.Name)).ID);
             var debugitem2 = context.Categories;
 
             if (ModelState.IsValid)

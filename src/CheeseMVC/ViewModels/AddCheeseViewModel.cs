@@ -21,13 +21,44 @@ namespace CheeseMVC.ViewModels
         // TODO - This is going threw Null in add form
         [Required(ErrorMessage = "Proper Category Not Selected! I don't need this here, its a test :(")]
         [Display(Name = "Category")]
-        public CheeseCategory CategoryID { get; set; }
+        public int CategoryID { get; set; }
         // TODO - THESE ARE GOING THREW NULL AT ADD FORM.
         public List<SelectListItem> Categories { get; set; }
 
         // TODO - Default Constructor?
         public AddCheeseViewModel()
         {
+            
+            Categories = new List<SelectListItem>();
+
+            foreach (var category in Categories)
+            {
+                Categories.Add(new SelectListItem
+                {
+                    Value = category.ToString(),
+                    Text =  category.ToString()
+                });
+            }
+
+            /*
+            // <option value="0">Hard</option>
+            Categories.Add(new SelectListItem {
+                Value = 1,//((int)CheeseType.Soft).ToString(),
+                Text = "hello" // CheeseType.Hard.ToString()
+            });
+
+            Categories.Add(new SelectListItem
+            {
+                Value = 2.ToString(),//((int)CheeseType.Soft).ToString(),
+                Text = "and hello"//CheeseType.Soft.ToString()
+            });
+
+            Categories.Add(new SelectListItem
+            {
+                Value = 3.ToString(),//((int)CheeseType.Fake).ToString(),
+                Text = "and Hello again!"//CheeseType.Fake.ToString()
+            });
+            */
 
         }
 
