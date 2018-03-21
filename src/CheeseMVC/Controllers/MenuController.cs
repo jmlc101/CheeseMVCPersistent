@@ -22,7 +22,7 @@ namespace CheeseMVC.Controllers
         public IActionResult Index()
         {
             List<Menu> menus = context.Menus.ToList();
-            return View();
+            return View(menus);
         }
 
         public IActionResult Add()
@@ -31,6 +31,7 @@ namespace CheeseMVC.Controllers
             return View(addMenuViewModel);
         }
 
+        [HttpPost]
         public IActionResult Add(AddMenuViewModel addMenuViewModel)
         {
             if (ModelState.IsValid)
@@ -90,8 +91,8 @@ namespace CheeseMVC.Controllers
                 {
                     CheeseMenu menuItem = new CheeseMenu
                     {
-                        Cheese = context.Cheeses.Single(),
-                        Menu = context.Menus.Single()
+                        Cheese = context.Cheeses.Single(c => c.ID == cheeseID),
+                        Menu = context.Menus.Single(m => m.ID == menuID)
                     };
 
                     context.CheeseMenus.Add(menuItem);
