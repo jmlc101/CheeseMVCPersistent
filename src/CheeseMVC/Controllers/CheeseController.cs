@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using CheeseMVC.ViewModels;
 using CheeseMVC.Data;
 using System.Linq;
-
+using Microsoft.EntityFrameworkCore;
+// TODO -1- its Time for final-touches
 namespace CheeseMVC.Controllers
 {
     public class CheeseController : Controller
@@ -18,38 +19,62 @@ namespace CheeseMVC.Controllers
 
         // GET: /<controller>/
         public IActionResult Index()
-        {
-            List<Cheese> cheeses = context.Cheeses.ToList();
+        {// TODO - Changed to include "include" based after video...
+            IList<Cheese> cheeses = context.Cheeses.Include(c => c.Category).ToList();
 
             return View(cheeses);
         }
 
         public IActionResult Add()
         {
-            AddCheeseViewModel addCheeseViewModel = new AddCheeseViewModel();
+            //////////////////////////////////////////////////////
+            int categoryCount = context.Categories.Count();
+            if (categoryCount == 0)
+            {
+                CheeseCategory defaultCategory1 = new CheeseCategory { Name = "Hard" };
+                CheeseCategory defaultCategory2 = new CheeseCategory { Name = "Soft" };
+                CheeseCategory defaultCategory3 = new CheeseCategory { Name = "Fake" };
+                context.Categories.Add(defaultCategory1);// TODO - Can I refractor?
+                context.Categories.Add(defaultCategory2);
+                context.Categories.Add(defaultCategory3);
+                context.SaveChanges();
+            }
+            //////////////////////////////////////////////////////
+            
+            // TODO - Changed as per video...
+            AddCheeseViewModel addCheeseViewModel = new AddCheeseViewModel(context.Categories.ToList());
             return View(addCheeseViewModel);
         }
 
         [HttpPost]
         public IActionResult Add(AddCheeseViewModel addCheeseViewModel)
         {
+            //This "debugitem" is to watch in debugger.
+            //var debugitem = (context.Categories.First(c => c.Name == (addCheeseViewModel.Name)).ID);
+            var debugitem2 = context.Categories;
+
             if (ModelState.IsValid)
             {
+                // TODO - added this as per video....
+                // TODO - IMPORTANT, remove "Equals" and replace the "==" that was originally there!!!!! Or rewrite Equals????
+                CheeseCategory newCheeseCategory =
+                    context.Categories.Single(c => c.ID.Equals( addCheeseViewModel.CategoryID));
                 // Add the new cheese to my existing cheeses
                 Cheese newCheese = new Cheese
                 {
                     Name = addCheeseViewModel.Name,
                     Description = addCheeseViewModel.Description,
-                    Type = addCheeseViewModel.Type
+                    Category = newCheeseCategory
                 };
-
+                // TODO - maybe?? context.Categories.Add(addCheeseViewModel.Type);
                 context.Cheeses.Add(newCheese);
+                //context.Categories.Add(newCheese.Category);
                 context.SaveChanges();
 
                 return Redirect("/Cheese");
             }
-
-            return View(addCheeseViewModel);
+            // TODO - SHOULD I pass Catagories into this View Somehow??
+            return View(addCheeseViewModel); // ( addCheeseViewModel.Categories ) ??
         }
 
         public IActionResult Remove()
@@ -71,6 +96,24 @@ namespace CheeseMVC.Controllers
             context.SaveChanges();
 
             return Redirect("/");
+        }
+
+        // TODO - Added this because of video....
+        // /Controller/Action/id
+        public IActionResult Category(int id)
+        {
+            if (id == 0)
+            {
+                return Redirect("/Category");
+            }
+
+            CheeseCategory theCategory = context.Categories
+                .Include(cat => cat.Cheeses)
+                .Single(cat => cat.ID == id);
+
+            ViewBag.title = "Cheeses in category: " + theCategory.Name;
+
+            return View("Index", theCategory.Cheeses);
         }
     }
 }
