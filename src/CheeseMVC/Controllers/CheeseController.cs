@@ -5,7 +5,7 @@ using CheeseMVC.ViewModels;
 using CheeseMVC.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-// TODO -1- its Time for finishing-touches :)
+// TODO -1- its Time for final-touches
 namespace CheeseMVC.Controllers
 {
     public class CheeseController : Controller
@@ -26,7 +26,22 @@ namespace CheeseMVC.Controllers
         }
 
         public IActionResult Add()
-        {// TODO - Changed as per video...
+        {
+            //////////////////////////////////////////////////////
+            int categoryCount = context.Categories.Count();
+            if (categoryCount == 0)
+            {
+                CheeseCategory defaultCategory1 = new CheeseCategory { Name = "Hard" };
+                CheeseCategory defaultCategory2 = new CheeseCategory { Name = "Soft" };
+                CheeseCategory defaultCategory3 = new CheeseCategory { Name = "Fake" };
+                context.Categories.Add(defaultCategory1);// TODO - Can I refractor?
+                context.Categories.Add(defaultCategory2);
+                context.Categories.Add(defaultCategory3);
+                context.SaveChanges();
+            }
+            //////////////////////////////////////////////////////
+            
+            // TODO - Changed as per video...
             AddCheeseViewModel addCheeseViewModel = new AddCheeseViewModel(context.Categories.ToList());
             return View(addCheeseViewModel);
         }
